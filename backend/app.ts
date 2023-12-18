@@ -2,14 +2,19 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 
 const httpServer = createServer();
-const io = new Server(httpServer, {});
+const io = new Server(httpServer, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"]
+  }
+});
 
 const port = 3001
 
-const registerConnectionHandlers = require("./api/socket/connectionHandler");
+// const registerConnectionHandlers = require("./api/socket/connectionHandler");
 
 io.on("connection", (socket) => {
-  registerConnectionHandlers(io, socket);
+  // registerConnectionHandlers(io, socket);
 
   console.log(`Socket connected: ${socket.id}`)
 });
