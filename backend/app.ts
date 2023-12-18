@@ -1,12 +1,22 @@
-import express from "express";
+import { createServer } from "http";
+import { Server } from "socket.io";
 
-const app = express();
-const port = 8080;
+const httpServer = createServer();
+const io = new Server(httpServer, {});
 
-app.get("/", (req, res) => {
-  res.send("Hello World!");
+const port = 3001
+
+const registerConnectionHandlers = require("./api/socket/connectionHandler");
+
+io.on("connection", (socket) => {
+  registerConnectionHandlers(io, socket);
+
+  console.log(`Socket connected: ${socket.id}`)
 });
 
-app.listen(port, () => {
-  console.log(`Listening on port ${port}...`);
-});
+io.on("disconnect", (socket) => {
+  console.log(`Socket disconnected: ${socket.id}`)
+})
+
+httpServer.listen(port);
+console.log(`Listening on port ${port}`)
