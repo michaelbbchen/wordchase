@@ -1,7 +1,6 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import { useNavigate } from "react-router-dom";
-
-
+import socket from './Socket'
 
 export default function Home() {
     const navigate = useNavigate();
@@ -19,6 +18,7 @@ export default function Home() {
     const gotoRoom = () => {
         let path : string = generateRandomString();
         navigate('room/' + path);
+        socket.emit("roomJoin", path);
     }
 
     return (
