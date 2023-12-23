@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { createRoutesFromChildren, useNavigate } from "react-router-dom";
 import { Socket } from "socket.io-client";
 import { generateRandomString } from "../services/util";
-import { requestRoom } from "../services/socket";
+import { createRoom, requestRoom } from "../services/socket";
 import { useSocket } from "../services/SocketContext";
 
 export default function Home() {
@@ -11,6 +11,7 @@ export default function Home() {
 
   const gotoRoom = () => {
     requestRoom(socket).then((roomId) => {
+      createRoom(socket, roomId)
       navigate(`room/${roomId}`)
     })
   };

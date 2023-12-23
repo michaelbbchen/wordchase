@@ -5,13 +5,17 @@ import { useSocket } from "../services/SocketContext";
 
 export default function Room() {
   const { roomId } = useParams();
+  const socket = useSocket()
 
-  const socket = useSocket();
+  useEffect(() => {
+    socket.emit("room:join", roomId)
+    return () => {
+      socket.emit("room:leave")
+    }
+  }, [socket, roomId]);
+
   const [isReady, setIsReady] = useState(true);
   const toggleState = () => {
-    socket.emit("room:join", {
-      roomId: roomId,
-    });
     setIsReady(!isReady);
   };
 
