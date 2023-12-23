@@ -56,11 +56,7 @@ const registerRoomHandlers = (io: Server, socket: Socket) => {
     // This part is not run when the player leaves by closing the tab
     // This should be moved into room-manager which shud be able to use socket ids too
     // Tbh player manager and room manager should jsut be combined into a single manager
-    const isEmpty = room.leave(player);
-    if (isEmpty) {
-      logger.info(`Deleting room ${room.roomId} because it is empty`)
-      RoomManager.deleteRoom(room.roomId);
-    }
+   room.leave(player);
   });
 };
 

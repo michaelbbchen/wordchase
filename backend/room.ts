@@ -1,5 +1,6 @@
 import { logger } from "./logger";
 import { Player } from "./player";
+import { RoomManager } from "./room-manager";
 
 export class Room {
   players: Player[];
@@ -14,7 +15,7 @@ export class Room {
     player.currentRoom = this.roomId;
   }
 
-  public leave(player: Player): boolean {
+  public leave(player: Player): void {
     if (
       this.players.find((p) => p.socketId === player.socketId) === undefined
     ) {
@@ -27,6 +28,8 @@ export class Room {
     player.currentRoom = undefined;
     logger.info(`${player.socketId} left the room ${this.roomId}`);
 
-    return this.players.length == 0;
+		if(this.players.length === 0) {
+			RoomManager.deleteRoom(this.roomId)
+		}
   }
 }
