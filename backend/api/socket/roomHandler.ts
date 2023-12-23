@@ -53,10 +53,7 @@ const registerRoomHandlers = (io: Server, socket: Socket) => {
 
     const room = RoomManager.getRoom(player.currentRoom);
 
-    // This part is not run when the player leaves by closing the tab
-    // This should be moved into room-manager which shud be able to use socket ids too
-    // Tbh player manager and room manager should jsut be combined into a single manager
-   room.leave(player);
+    room.leave(player);
   });
 };
 
