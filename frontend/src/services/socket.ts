@@ -9,5 +9,5 @@ export const requestRoom = async (socket: Socket): Promise<string> => {
 };
 
 export const createRoom = (socket: Socket, roomId: string): void => {
-  socket.emit("room:create", roomId)
-}
+  socket.emit("room:create", roomId);
+};
