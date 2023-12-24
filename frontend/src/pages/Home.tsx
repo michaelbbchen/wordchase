@@ -18,17 +18,17 @@ export default function Home() {
 
   const joinRoom = () => {
     if (joinValue.length == 4) {
-      navigate(`room/${joinValue.toUpperCase()}`)
+      navigate(`room/${joinValue.toUpperCase()}`);
     }
-  }
+  };
 
-  const [joinValue, setJoinValue] = useState('');
-  const changeJoinValue = (e : ChangeEvent<HTMLInputElement>) => {
+  const [joinValue, setJoinValue] = useState("");
+  const changeJoinValue = (e: ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     if (/^[a-zA-Z]*$/.test(newValue) && newValue.length <= 4) {
       setJoinValue(newValue);
     }
-  }
+  };
 
   return (
     <div>

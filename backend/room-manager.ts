@@ -7,7 +7,7 @@ export namespace RoomManager {
   export function createRoom(roomId: string) {
     if (roomId in rooms) {
       logger.error(`Cannot create room: ${roomId} already exists`);
-      return
+      return;
     }
     rooms[roomId] = new Room(roomId);
   }
