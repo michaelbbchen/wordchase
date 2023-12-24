@@ -1,4 +1,4 @@
-import PlayerManager from "./player-manager";
+import { logger } from "./logger";
 import { Room } from "./room";
 
 export namespace RoomManager {
@@ -6,21 +6,22 @@ export namespace RoomManager {
 
   export function createRoom(roomId: string) {
     if (roomId in rooms) {
-      throw Error(`Cannot create room: ${roomId} already exists`);
+      logger.error(`Cannot create room: ${roomId} already exists`);
+      return
     }
     rooms[roomId] = new Room(roomId);
   }
 
   export function deleteRoom(roomId: string) {
     if (!(roomId in rooms)) {
-      throw Error(`Cannot remove room: ${roomId} doesn't exist`);
+      logger.warn(`Cannot remove room: ${roomId} doesn't exist`);
     }
     delete rooms[roomId];
   }
 
-  export function getRoom(roomId: string) {
+  export function getRoom(roomId: string): Room {
     if (!(roomId in rooms)) {
-      throw Error(`Room ${roomId} was not found`);
+      logger.error(`Room ${roomId} was not found`);
     }
     return rooms[roomId];
   }
