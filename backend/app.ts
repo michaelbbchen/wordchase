@@ -18,7 +18,7 @@ const port = 3001;
 
 io.on("connection", (socket) => {
   logger.info(`Socket connected: ${socket.id}`);
-  PlayerManager.addPlayer(new Player(socket.id));
+  PlayerManager.addPlayer(socket.id);
 
   logger.debug("Registering Room Handlers");
   registerRoomHandlers(io, socket);

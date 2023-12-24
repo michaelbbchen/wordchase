@@ -24,4 +24,8 @@ export namespace RoomManager {
     }
     return rooms[roomId];
   }
+
+  export function hasRoom(roomId: string) {
+    return roomId in rooms;
+  }
 }

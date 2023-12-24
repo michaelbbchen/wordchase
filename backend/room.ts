@@ -14,7 +14,7 @@ export class Room {
     player.currentRoom = this.roomId;
   }
 
-  public leave(player: Player): void {
+  public leave(player: Player): boolean {
     if (
       this.players.find((p) => p.socketId === player.socketId) === undefined
     ) {
@@ -26,5 +26,7 @@ export class Room {
     this.players = this.players.filter((p) => p !== player);
     player.currentRoom = undefined;
     logger.info(`${player.socketId} left the room ${this.roomId}`);
+
+    return this.players.length == 0;
   }
 }

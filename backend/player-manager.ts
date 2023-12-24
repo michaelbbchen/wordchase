@@ -3,38 +3,34 @@ import { logger } from "./logger";
 import { RoomManager } from "./room-manager";
 
 namespace PlayerManager {
-  export const players: Player[] = [];
+  export const players: { [socketId: string]: Player } = {};
 
-  export function addPlayer(player: Player): void {
-    players.push(player);
-    logger.verbose(`Added player ${player.socketId}`);
+  export function addPlayer(socketId: string): void {
+    players[socketId] = new Player(socketId);
+    logger.verbose(`Added player ${socketId}`);
   }
 
   export function removePlayer(socketId: string): void {
-    const playerIndex = players.findIndex(
-      (player) => player.socketId === socketId
-    );
-
-    if (playerIndex === -1) {
+    if (!players.hasOwnProperty(socketId)) {
       logger.warn(`Attempted to remove non-existent player: ${socketId}`);
       return;
     }
 
-    const currentRoom = players[playerIndex].currentRoom;
+    const currentRoom = players[socketId].currentRoom;
     if (currentRoom !== undefined) {
-      RoomManager.getRoom(currentRoom).leave(players[playerIndex]);
+      RoomManager.getRoom(currentRoom).leave(players[socketId]);
     }
 
-    players.splice(playerIndex, 1);
+    delete players[socketId];
     logger.verbose(`Removed player ${socketId}`);
   }
 
   export function getPlayers(): Player[] {
-    return players;
+    return Object.values(players);
   }
 
   export function getPlayer(socketId: string): Player | undefined {
-    return players.find((player) => player.socketId == socketId);
+    return players[socketId];
   }
 }
 

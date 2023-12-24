@@ -31,10 +31,15 @@ const registerRoomHandlers = (io: Server, socket: Socket) => {
   socket.on("room:join", (roomId): void => {
     logger.verbose(`${socket.id} requested to join room ${roomId}`);
     const player = PlayerManager.getPlayer(socket.id);
-    if (player !== undefined) RoomManager.getRoom(roomId).join(player);
-    else {
+
+    if (player === undefined) {
       throw new Error(`Unknown player ${socket.id} attempted to join room`);
     }
+
+    if (!RoomManager.hasRoom(roomId)) {
+      RoomManager.createRoom(roomId);
+    }
+    RoomManager.getRoom(roomId).join(player);
   });
 
   socket.on("room:leave", () => {
@@ -46,7 +51,16 @@ const registerRoomHandlers = (io: Server, socket: Socket) => {
       throw new Error(`Player (${player?.socketId}) is not in a room`);
     }
 
-    RoomManager.getRoom(player.currentRoom).leave(player);
+    const room = RoomManager.getRoom(player.currentRoom);
+
+    // This part is not run when the player leaves by closing the tab
+    // This should be moved into room-manager which shud be able to use socket ids too
+    // Tbh player manager and room manager should jsut be combined into a single manager
+    const isEmpty = room.leave(player);
+    if (isEmpty) {
+      logger.info(`Deleting room ${room.roomId} because it is empty`)
+      RoomManager.deleteRoom(room.roomId);
+    }
   });
 };
 
