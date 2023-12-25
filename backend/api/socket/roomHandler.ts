@@ -46,40 +46,22 @@ const registerRoomHandlers = (io: Server, socket: Socket) => {
     room.leave(player);
   });
 
-  socket.on("room:ready", () => {
-    logger.verbose(`${socket.id} declared they are ready`);
+  socket.on("room:setReady", (isReady: boolean) => {
+    logger.verbose(`${socket.id} declared ${isReady ? "ready" : "unready"}`);
 
     const player = PlayerManager.getPlayer(socket.id);
     if (player === undefined) {
-      throw Error(`Unknown player ${socket.id} attempted to declare ready`);
+      throw Error(`Unknown player ${socket.id} attempted to set ready`);
     }
 
     if (player.currentRoom === undefined) {
       logger.warn(
-        `Player ${socket.id} attempted to declare ready when they are not in room`
+        `Player ${socket.id} attempted to set ready when they are not in room`
       );
       return;
     }
 
-    RoomManager.getRoom(player.currentRoom).setReady(player, true);
-  });
-
-  socket.on("room:unready", () => {
-    logger.verbose(`${socket.id} declared they are unready`);
-
-    const player = PlayerManager.getPlayer(socket.id);
-    if (player === undefined) {
-      throw Error(`Unknown player ${socket.id} attempted to declare unready`);
-    }
-
-    if (player.currentRoom === undefined) {
-      logger.warn(
-        `Player ${socket.id} attempted to declare unready when they are not in room`
-      );
-      return;
-    }
-
-    RoomManager.getRoom(player.currentRoom).setReady(player, false);
+    RoomManager.getRoom(player.currentRoom).setReady(player, isReady);
   });
 };
 

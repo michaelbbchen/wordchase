@@ -20,8 +20,7 @@ export default function Room() {
   };
 
   useEffect(() => {
-    if (isReady) socket.emit("room:ready");
-    else socket.emit("room:unready");
+    socket.emit("room:setReady", isReady);
   }, [isReady]);
 
   return (
