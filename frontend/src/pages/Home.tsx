@@ -39,11 +39,12 @@ export default function Home() {
     <div className="flex flex-col text-center">
       <div className="text-6xl my-6">wordchase</div>
       <div className="flex flex-col justify-center items-center my-32 space-y-10">
-        <div className="w-1/4 py-2 px-4 rounded-xl bg-columbia_blue-300">
-          <button onClick={gotoRoom} className="w-full h-full">
-            Create Room
-          </button>
-        </div>
+        <button
+          onClick={gotoRoom}
+          className="h-full w-1/4 py-2 px-4 rounded-xl bg-columbia_blue-300 hover:bg-columbia_blue-200"
+        >
+          Create Room
+        </button>
 
         <hr className="border-1 border-y-sandy_brown-900 w-1/3"></hr>
 
@@ -56,7 +57,7 @@ export default function Home() {
             onKeyDown={handleKeyPress}
           />
           <button
-            className="bg-columbia_blue-300 rounded-xl py-2 px-4 w-2/3"
+            className="bg-columbia_blue-300 rounded-xl w-2/3 hover:bg-columbia_blue-200"
             onClick={joinRoom}
           >
             Join Room
