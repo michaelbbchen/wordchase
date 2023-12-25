@@ -1,5 +1,3 @@
-import React from "react";
-import logo from "./logo.svg";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Room from "./pages/Room";
@@ -7,8 +5,7 @@ import "./App.css";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
+    <div className="App w-screen h-screen bg-night text-snow">
         <Router>
           <Routes>
             <Route path="/" element={<Home />} />
@@ -17,7 +14,6 @@ function App() {
             </Route>
           </Routes>
         </Router>
-      </header>
     </div>
   );
 }

@@ -57,15 +57,37 @@ export default function Room() {
   };
 
   return (
-    <div>
-      <h1>Room {roomId}</h1>
-      <button onClick={toggleState}>{isReady ? "Unready" : "Ready"}</button>
-      {name !== undefined && (
-        <input value={name} maxLength={15} onChange={onTextChange} />
-      )}
-      {playerInfoDict !== undefined && (
-        <PlayerList playerInfoDictionary={playerInfoDict} />
-      )}
+    <div className="flex flex-col text-center items-center space-y-3">
+      <div className="text-snow text-5xl my-6">Room {roomId}</div>
+      <div className="flex flex-row w-full">
+        <div className="w-1/2">
+          <div className="text-xl">Nickname</div>
+          {name !== undefined && (
+            <input
+              className="text-night p-2 my-2"
+              value={name}
+              maxLength={15}
+              onChange={onTextChange}
+            />
+          )}
+          <br></br>
+          <button
+            className="bg-columbia_blue-300 w-1/4 rounded-lg py-2 my-10"
+            onClick={toggleState}
+          >
+            {isReady ? "Unready" : "Ready Up"}
+          </button>
+        </div>
+        <div className="w-1/2 flex flex-col items-center">
+          <div className="text-xl">Players</div>
+          <hr className="border-1 border-sandy_brown-900 w-1/3"></hr>
+          <div className="my-3">
+            {playerInfoDict !== undefined && (
+              <PlayerList playerInfoDictionary={playerInfoDict} />
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
