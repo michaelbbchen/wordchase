@@ -49,7 +49,7 @@ export default function Home() {
 
         <div className="flex flex-row space-x-3 w-1/4">
           <input
-            className="rounded-xl p-2 w-1/3 text-center uppercase"
+            className="rounded-xl p-2 w-1/3 text-center uppercase text-night"
             type="text"
             value={joinValue}
             onChange={changeJoinValue}
