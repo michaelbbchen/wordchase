@@ -33,6 +33,7 @@ export class Room {
     logger.info(`${player.socketId} left the room ${this.roomId}`);
 
     if (Object.keys(this.players).length === 0) {
+      logger.verbose(`There are no remaining players in room ${this.roomId}`);
       RoomManager.deleteRoom(this.roomId);
     }
   }
@@ -46,13 +47,13 @@ export class Room {
     this.players[player.socketId].isReady = ready;
   }
 
-  public setName(player: Player, newName: string): void {
+  public setName(player: Player, name: string): void {
     if (!(player.socketId in this.players)) {
       throw Error(
-        `Unrecognized player ${player.socketId} attempted to set ready`
+        `Unrecognized player ${player.socketId} attempted to set name`
       );
     }
-    this.players[player.socketId].name = newName;
+    this.players[player.socketId].name = name;
   }
 
   public getPlayerInfoDict(): { [key: string]: PlayerInfo } {

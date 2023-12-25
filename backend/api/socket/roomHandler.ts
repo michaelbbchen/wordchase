@@ -13,16 +13,12 @@ const registerRoomHandlers = (io: Server, socket: Socket) => {
     callback(roomId);
   });
 
-  socket.on("room:requestPlayerId", (callback): void => {
-    callback(socket.id);
-  })
-
-  socket.on("room:requestInitialPlayerDict", (roomId, callback): void => {
+  socket.on("room:requestPlayerInfoDict", (roomId, callback): void => {
     logger.verbose(
-      `Recieved request for initial player dictionary from ${socket.id}`
+      `Recieved request for PlayerInfo Dictionary from ${socket.id}`
     );
     callback(RoomManager.getRoom(roomId).getPlayerInfoDict());
-  })
+  });
 
   socket.on("room:create", (roomId: string): void => {
     logger.info(`Created room: ${roomId}`);
@@ -43,8 +39,10 @@ const registerRoomHandlers = (io: Server, socket: Socket) => {
     RoomManager.getRoom(roomId).join(player);
     socket.join(roomId);
 
-    // logger.info(`${JSON.stringify(RoomManager.getRoom(roomId).getPlayerInfoDict())}`)
-    io.to(roomId).emit("room:update", RoomManager.getRoom(roomId).getPlayerInfoDict());
+    io.to(roomId).emit(
+      "room:update",
+      RoomManager.getRoom(roomId).getPlayerInfoDict()
+    );
   });
 
   socket.on("room:leave", () => {
@@ -62,7 +60,12 @@ const registerRoomHandlers = (io: Server, socket: Socket) => {
     socket.leave(player.currentRoom);
     room.leave(player);
 
-    io.to(roomId).emit("room:update", RoomManager.getRoom(roomId).getPlayerInfoDict());
+    if (RoomManager.hasRoom(roomId)) {
+      io.to(roomId).emit(
+        "room:update",
+        RoomManager.getRoom(roomId).getPlayerInfoDict()
+      );
+    }
   });
 
   socket.on("room:setReady", (isReady: boolean) => {
@@ -83,7 +86,10 @@ const registerRoomHandlers = (io: Server, socket: Socket) => {
     RoomManager.getRoom(player.currentRoom).setReady(player, isReady);
 
     const roomId = player.currentRoom;
-    io.to(roomId).emit("room:update", RoomManager.getRoom(roomId).getPlayerInfoDict());
+    io.to(roomId).emit(
+      "room:update",
+      RoomManager.getRoom(roomId).getPlayerInfoDict()
+    );
   });
 
   socket.on("room:changeName", (newName: string) => {
@@ -102,10 +108,13 @@ const registerRoomHandlers = (io: Server, socket: Socket) => {
     }
 
     RoomManager.getRoom(player.currentRoom).setName(player, newName);
-    
+
     const roomId = player.currentRoom;
-    io.to(roomId).emit("room:update", RoomManager.getRoom(roomId).getPlayerInfoDict());
-  })
+    io.to(roomId).emit(
+      "room:update",
+      RoomManager.getRoom(roomId).getPlayerInfoDict()
+    );
+  });
 };
 
 export default registerRoomHandlers;

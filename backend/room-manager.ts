@@ -9,6 +9,8 @@ export namespace RoomManager {
       logger.error(`Cannot create room: ${roomId} already exists`);
       return;
     }
+
+    logger.verbose(`Room ${roomId} was created`);
     rooms[roomId] = new Room(roomId);
   }
 
@@ -16,6 +18,7 @@ export namespace RoomManager {
     if (!(roomId in rooms)) {
       logger.warn(`Cannot remove room: ${roomId} doesn't exist`);
     }
+    logger.verbose(`Room ${roomId} was deleted`);
     delete rooms[roomId];
   }
 

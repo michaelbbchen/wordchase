@@ -8,3 +8,7 @@ export const generateRandomString = (length: number = 4): string => {
   }
   return randomString;
 };
+
+export const isValidRoomId = (roomId: string): boolean => {
+  return /^[a-zA-Z]*$/.test(roomId) && roomId.length === 4;
+};
