@@ -2,21 +2,11 @@ import { Server, Socket } from "socket.io";
 import { logger } from "../../logger";
 import { RoomManager } from "../../room-manager";
 import PlayerManager from "../../player-manager";
-
-export const generateRoomId = (): string => {
-  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  let randomString = "";
-
-  for (let i = 0; i < 4; i++) {
-    const randomIndex = Math.floor(Math.random() * characters.length);
-    randomString += characters.charAt(randomIndex);
-  }
-  return randomString;
-};
+import { generateRandomString } from "../../util";
 
 const registerRoomHandlers = (io: Server, socket: Socket) => {
   socket.on("room:request", (callback): void => {
-    const roomId = generateRoomId();
+    const roomId = generateRandomString();
     logger.verbose(
       `Recieved room creation request from ${socket.id}, demanding ${roomId}`
     );
@@ -54,6 +44,24 @@ const registerRoomHandlers = (io: Server, socket: Socket) => {
     const room = RoomManager.getRoom(player.currentRoom);
 
     room.leave(player);
+  });
+
+  socket.on("room:setReady", (isReady: boolean) => {
+    logger.verbose(`${socket.id} declared ${isReady ? "ready" : "unready"}`);
+
+    const player = PlayerManager.getPlayer(socket.id);
+    if (player === undefined) {
+      throw Error(`Unknown player ${socket.id} attempted to set ready`);
+    }
+
+    if (player.currentRoom === undefined) {
+      logger.warn(
+        `Player ${socket.id} attempted to set ready when they are not in room`
+      );
+      return;
+    }
+
+    RoomManager.getRoom(player.currentRoom).setReady(player, isReady);
   });
 };
 

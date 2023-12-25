@@ -11,9 +11,8 @@ namespace PlayerManager {
   }
 
   export function removePlayer(socketId: string): void {
-    if (!players.hasOwnProperty(socketId)) {
-      logger.warn(`Attempted to remove non-existent player: ${socketId}`);
-      return;
+    if (!(socketId in players)) {
+      throw Error(`Attempted to remove non-existent player: ${socketId}`);
     }
 
     const currentRoom = players[socketId].currentRoom;
