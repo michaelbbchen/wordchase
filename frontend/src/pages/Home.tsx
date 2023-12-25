@@ -18,9 +18,9 @@ export default function Home() {
 
   const joinRoom = () => {
     if (joinValue.length == 4) {
-      navigate(`room/${joinValue.toUpperCase()}`)
+      navigate(`room/${joinValue.toUpperCase()}`);
     }
-  }
+  };
 
   // Handles text field input
   const [joinValue, setJoinValue] = useState('');
@@ -29,7 +29,7 @@ export default function Home() {
     if (/^[a-zA-Z]*$/.test(newValue) && newValue.length <= 4) {
       setJoinValue(newValue);
     }
-  }
+  };
 
   // Joins room if enter key is pressed
   const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
