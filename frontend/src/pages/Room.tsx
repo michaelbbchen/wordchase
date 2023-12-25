@@ -68,14 +68,14 @@ export default function Room() {
   };
 
   return (
-    <div className="flex flex-col text-center items-center space-y-3">
+    <div className="flex flex-col text-center items-center space-y-3 backdrop-blur-md w-full h-full backdrop-brightness-50">
       <div className="text-snow text-5xl my-6">Room {roomId}</div>
       <div className="flex flex-row w-full">
         <div className="w-1/2">
-          <div className="text-xl">Nickname</div>
+          <div className="text-xl text-snow">Nickname</div>
           {name !== undefined && (
             <input
-              className="text-night p-2 my-2"
+              className="text-night p-2 my-2 rounded-lg"
               value={name}
               maxLength={15}
               onChange={onTextChange}
@@ -83,14 +83,14 @@ export default function Room() {
           )}
           <br></br>
           <button
-            className="bg-columbia_blue-300 w-1/4 rounded-lg py-2 my-10"
+            className="border-2 border-white bg-amber-600 hover:bg-amber-500 w-1/4 rounded-lg py-2 my-10 text-snow"
             onClick={toggleState}
           >
             {isReady ? "Unready" : "Ready Up"}
           </button>
         </div>
         <div className="w-1/2 flex flex-col items-center">
-          <div className="text-xl">Players</div>
+          <div className="text-xl text-snow">Players</div>
           <hr className="border-1 border-sandy_brown-900 w-1/3"></hr>
           <div className="my-3">
             {playerInfoDict !== undefined && (
@@ -102,7 +102,9 @@ export default function Room() {
       {countdown !== undefined ? (
         <div className="absolute left-1/2 bottom-1/2 text-9xl">{countdown}</div>
       ) : (
-        <div className="absolute bottom-5">Waiting for Ready Up...</div>
+        <div className="absolute bottom-5 text-snow">
+          Waiting for Ready Up...
+        </div>
       )}
     </div>
   );

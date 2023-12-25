@@ -5,7 +5,9 @@ import "./App.css";
 
 function App() {
   return (
-    <div className="App w-screen h-screen bg-night text-snow">
+    <>
+      <div className="background-image"></div>
+      <div className="App w-screen h-screen bg-transparent text-night">
         <Router>
           <Routes>
             <Route path="/" element={<Home />} />
@@ -14,7 +16,8 @@ function App() {
             </Route>
           </Routes>
         </Router>
-    </div>
+      </div>
+    </>
   );
 }
 
