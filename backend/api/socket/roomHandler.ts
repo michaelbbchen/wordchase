@@ -3,6 +3,7 @@ import { logger } from "../../logger";
 import { RoomManager } from "../../room-manager";
 import PlayerManager from "../../player-manager";
 import { generateRandomString } from "../../util";
+import { clear } from "console";
 
 const registerRoomHandlers = (io: Server, socket: Socket) => {
   socket.on("room:request", (callback): void => {
@@ -17,7 +18,7 @@ const registerRoomHandlers = (io: Server, socket: Socket) => {
     logger.verbose(
       `Recieved request for PlayerInfo Dictionary from ${socket.id}`
     );
-    callback(RoomManager.getRoom(roomId).getPlayerInfoDict());
+    callback(RoomManager.getRoom(roomId).players);
   });
 
   socket.on("room:create", (roomId: string): void => {
@@ -39,10 +40,7 @@ const registerRoomHandlers = (io: Server, socket: Socket) => {
     RoomManager.getRoom(roomId).join(player);
     socket.join(roomId);
 
-    io.to(roomId).emit(
-      "room:update",
-      RoomManager.getRoom(roomId).getPlayerInfoDict()
-    );
+    io.to(roomId).emit("room:update", RoomManager.getRoom(roomId).players);
   });
 
   socket.on("room:leave", () => {
@@ -61,10 +59,7 @@ const registerRoomHandlers = (io: Server, socket: Socket) => {
     room.leave(player);
 
     if (RoomManager.hasRoom(roomId)) {
-      io.to(roomId).emit(
-        "room:update",
-        RoomManager.getRoom(roomId).getPlayerInfoDict()
-      );
+      io.to(roomId).emit("room:update", RoomManager.getRoom(roomId).players);
     }
   });
 
@@ -83,13 +78,28 @@ const registerRoomHandlers = (io: Server, socket: Socket) => {
       return;
     }
 
-    RoomManager.getRoom(player.currentRoom).setReady(player, isReady);
-
     const roomId = player.currentRoom;
-    io.to(roomId).emit(
-      "room:update",
-      RoomManager.getRoom(roomId).getPlayerInfoDict()
-    );
+    const room = RoomManager.getRoom(roomId);
+
+    room.setReady(player, isReady);
+
+    if (room.isAllReady()) {
+      logger.info(`All ready in room ${roomId}, starting countdown`);
+      room.countdown = 3;
+      io.to(roomId).emit("room:countdown", room.countdown);
+      room.startCountdown(() => {
+        logger.verbose(
+          `Emitting countdown state for ${roomId}: ${room.countdown}`
+        );
+        io.to(roomId).emit("room:countdown", room.countdown);
+      });
+    } else {
+      room.countdown = undefined;
+      room.stopCountdown();
+      io.to(roomId).emit("room:countdown", room.countdown);
+    }
+
+    io.to(roomId).emit("room:update", RoomManager.getRoom(roomId).players);
   });
 
   socket.on("room:changeName", (newName: string) => {
@@ -110,10 +120,7 @@ const registerRoomHandlers = (io: Server, socket: Socket) => {
     RoomManager.getRoom(player.currentRoom).setName(player, newName);
 
     const roomId = player.currentRoom;
-    io.to(roomId).emit(
-      "room:update",
-      RoomManager.getRoom(roomId).getPlayerInfoDict()
-    );
+    io.to(roomId).emit("room:update", RoomManager.getRoom(roomId).players);
   });
 };
 

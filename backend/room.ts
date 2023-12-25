@@ -5,6 +5,8 @@ import { generateRandomString } from "./util";
 
 export class Room {
   players: { [key: string]: PlayerInfo };
+  countdown: undefined | number = undefined;
+  countdownInterval: undefined | ReturnType<typeof setTimeout> = undefined;
 
   constructor(public readonly roomId: string) {
     this.players = {};
@@ -56,7 +58,35 @@ export class Room {
     this.players[player.socketId].name = name;
   }
 
-  public getPlayerInfoDict(): { [key: string]: PlayerInfo } {
-    return this.players;
+  public isAllReady(): boolean {
+    for (const playerId in this.players) {
+      if (this.players[playerId].isReady === false) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  public startCountdown(callback: () => void): void {
+    const incrementCountdown = () => {
+      if (this.countdown === 0) {
+        clearInterval(this.countdownInterval);
+        return;
+      }
+      if (this.countdown !== undefined) {
+        this.countdown--;
+      }
+      callback();
+    };
+
+    // incrementCountdown(); // run once without delay for responsiveness
+    this.countdownInterval = setInterval(incrementCountdown, 1000);
+  }
+
+  public stopCountdown(): void {
+    if (this.countdownInterval !== undefined) {
+      clearInterval(this.countdownInterval);
+      this.countdownInterval = undefined;
+    }
   }
 }

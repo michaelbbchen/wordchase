@@ -21,6 +21,8 @@ export default function Room() {
   >(undefined);
   const [name, setName] = useState<string | undefined>(undefined);
 
+  const [countdown, setCountdown] = useState<number | undefined>(undefined);
+
   useEffect(() => {
     socket.emit("room:join", roomId);
 
@@ -31,6 +33,15 @@ export default function Room() {
 
     socket.on("room:update", (playerInfoDict) => {
       setPlayerInfoDict(playerInfoDict);
+    });
+
+    socket.on("room:countdown", (countdown) => {
+      if (countdown === null) {
+        // for some reason, socket.io passes undefined as null
+        setCountdown(undefined);
+        return;
+      }
+      setCountdown(countdown);
     });
 
     return () => {
@@ -88,6 +99,11 @@ export default function Room() {
           </div>
         </div>
       </div>
+      {countdown !== undefined ? (
+        <div className="absolute left-1/2 bottom-1/2 text-9xl">{countdown}</div>
+      ) : (
+        <div className="absolute bottom-5">Waiting for Ready Up...</div>
+      )}
     </div>
   );
 }
