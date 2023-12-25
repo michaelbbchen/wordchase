@@ -1,15 +1,9 @@
-import React, { ChangeEvent, useState, useEffect } from "react";
+import { ChangeEvent, useState, useEffect } from "react";
 
 import { useParams } from "react-router-dom";
-import { requestInitialPlayerDict, requestPlayerId } from "../services/socket";
+import { requestPlayerInfoDict } from "../services/socket";
 import { useSocket } from "../services/SocketContext";
 import PlayerList from "./PlayerList";
-
-const testDict = {
-  a: { name: "player1", isReady: false },
-  b: { name: "player2", isReady: true },
-  c: { name: "player3", isReady: false },
-};
 
 interface PlayerInfo {
   name: string;
@@ -17,29 +11,28 @@ interface PlayerInfo {
 }
 
 export default function Room() {
-  const { roomId } = useParams();
+  // compiler annotates this as a string | undefined but I'm pretty sure it is always defined
+  const { roomId } = useParams<string>();
+
   const socket = useSocket();
 
-  const [playerId, setPlayerId] = useState("a");
-  const [playerInfoDict, setPlayerInfoDict] = useState<{ [key: string]: PlayerInfo }>(testDict);
+  const [playerInfoDict, setPlayerInfoDict] = useState<
+    { [key: string]: PlayerInfo } | undefined
+  >(undefined);
   const [name, setName] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     socket.emit("room:join", roomId);
 
-    requestInitialPlayerDict(socket, roomId!).then((playerInfoDict) => {
+    requestPlayerInfoDict(socket, roomId!).then((playerInfoDict) => {
       setPlayerInfoDict(playerInfoDict);
-      requestPlayerId(socket).then((playerId) => {
-        setPlayerId(playerId);
-        setName(playerInfoDict[playerId].name);
-        console.log(name);
-      });
-    });    
-
-    socket.on("room:update", (roomInfo) => {
-      setPlayerInfoDict(roomInfo);
+      setName(playerInfoDict[socket.id].name);
     });
-    
+
+    socket.on("room:update", (playerInfoDict) => {
+      setPlayerInfoDict(playerInfoDict);
+    });
+
     return () => {
       socket.emit("room:leave");
     };
@@ -52,8 +45,7 @@ export default function Room() {
 
   useEffect(() => {
     socket.emit("room:setReady", isReady);
-  }, [isReady]);
-
+  }, [socket, isReady]);
 
   const onTextChange = (e: ChangeEvent<HTMLInputElement>) => {
     let val = e.target.value;
@@ -66,16 +58,13 @@ export default function Room() {
 
   return (
     <div>
-      <p>Room!</p>
+      <h1>Room {roomId}</h1>
       <button onClick={toggleState}>{isReady ? "Unready" : "Ready"}</button>
       {name !== undefined && (
-        <div>
-          <input value={name} maxLength={15} onChange={onTextChange} />
-          <PlayerList
-            playerId={playerId}
-            playerInfoDictionary={playerInfoDict}
-          />{" "}
-        </div>
+        <input value={name} maxLength={15} onChange={onTextChange} />
+      )}
+      {playerInfoDict !== undefined && (
+        <PlayerList playerInfoDictionary={playerInfoDict} />
       )}
     </div>
   );

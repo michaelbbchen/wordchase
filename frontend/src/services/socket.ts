@@ -1,5 +1,5 @@
 import { Socket } from "socket.io-client";
-import { PlayerInfo } from "./util";
+import { PlayerInfo } from "../pages/PlayerList";
 
 export const requestRoom = async (socket: Socket): Promise<string> => {
   return new Promise((resolve, _) => {
@@ -9,19 +9,18 @@ export const requestRoom = async (socket: Socket): Promise<string> => {
   });
 };
 
-export const requestPlayerId = async (socket: Socket): Promise<string> => {
+export const requestPlayerInfoDict = async (
+  socket: Socket,
+  roomId: string
+): Promise<{ [key: string]: PlayerInfo }> => {
   return new Promise((resolve, _) => {
-    socket.emit("room:requestPlayerId", (playerId: string) => {
-      resolve(playerId);
-    });
-  });
-};
-
-export const requestInitialPlayerDict = async (socket: Socket, roomId: string): Promise<{ [key: string]: PlayerInfo }> => {
-  return new Promise((resolve, _) => {
-    socket.emit("room:requestInitialPlayerDict", roomId, (playerInfoDict: { [key: string]: PlayerInfo }) => {
-      resolve(playerInfoDict);
-    });
+    socket.emit(
+      "room:requestPlayerInfoDict",
+      roomId,
+      (playerInfoDict: { [key: string]: PlayerInfo }) => {
+        resolve(playerInfoDict);
+      }
+    );
   });
 };
 

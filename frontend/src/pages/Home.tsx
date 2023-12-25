@@ -1,9 +1,8 @@
-import React, { ChangeEvent, KeyboardEvent, useEffect, useState } from "react";
-import { createRoutesFromChildren, useNavigate } from "react-router-dom";
-import { Socket } from "socket.io-client";
-import { generateRandomString } from "../services/util";
+import { ChangeEvent, KeyboardEvent, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { createRoom, requestRoom } from "../services/socket";
 import { useSocket } from "../services/SocketContext";
+import { isValidRoomId } from "../services/util";
 
 export default function Home() {
   const navigate = useNavigate();
@@ -17,23 +16,21 @@ export default function Home() {
   };
 
   const joinRoom = () => {
-    if (joinValue.length == 4) {
+    if (isValidRoomId(joinValue)) {
       navigate(`room/${joinValue.toUpperCase()}`);
     }
   };
 
-  // Handles text field input
-  const [joinValue, setJoinValue] = useState('');
-  const changeJoinValue = (e : ChangeEvent<HTMLInputElement>) => {
+  const [joinValue, setJoinValue] = useState("");
+  const changeJoinValue = (e: ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     if (/^[a-zA-Z]*$/.test(newValue) && newValue.length <= 4) {
       setJoinValue(newValue);
     }
   };
 
-  // Joins room if enter key is pressed
   const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       joinRoom();
     }
   };
@@ -43,7 +40,6 @@ export default function Home() {
       <button onClick={gotoRoom}>Create Room</button>
       <input
         type="text"
-        id="myTextField"
         value={joinValue}
         onChange={changeJoinValue}
         onKeyDown={handleKeyPress}
