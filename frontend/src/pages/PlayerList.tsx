@@ -13,9 +13,11 @@ const PlayerList: React.FC<PlayerListProps> = ({ playerInfoDictionary }) => {
   return (
     <div>
       {Object.entries(playerInfoDictionary).map(([key, value]) => (
-        <div key={key}>
+        <div
+          key={key}
+          className={value.isReady ? "text-green-400" : "text-red-400"}
+        >
           <div> {value.name} </div>
-          <div> {value.isReady ? "R" : "N"} </div>
         </div>
       ))}
     </div>
