@@ -1,3 +1,4 @@
+import { Game } from "./game";
 import { logger } from "./logger";
 import { Player, PlayerInfo } from "./player";
 import { RoomManager } from "./room-manager";
@@ -5,6 +6,7 @@ import { generateRandomString } from "./util";
 
 export class Room {
   players: { [key: string]: PlayerInfo };
+  game: Game | undefined = undefined;
 
   constructor(public readonly roomId: string) {
     this.players = {};
@@ -58,5 +60,9 @@ export class Room {
 
   public getPlayerInfoDict(): { [key: string]: PlayerInfo } {
     return this.players;
+  }
+
+  public createGame(): void {
+    this.game = new Game(Object.keys(this.players));
   }
 }

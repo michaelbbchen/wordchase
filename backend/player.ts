@@ -12,3 +12,13 @@ export class PlayerInfo {
     this.name = name;
   }
 }
+
+export class GamePlayerInfo {
+  line: number;
+  index: number = 0;
+  alive: boolean = true;
+  
+  constructor(line: number) {
+    this.line = line;
+  }
+}
