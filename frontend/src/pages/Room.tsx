@@ -23,6 +23,7 @@ export default function Room() {
   const [name, setName] = useState<string | undefined>(undefined);
 
   const [gameStart, setGameStart] = useState(false);
+  const [countdown, setCountdown] = useState<number | undefined>(undefined);
 
   useEffect(() => {
     socket.emit("room:join", roomId);
@@ -38,7 +39,16 @@ export default function Room() {
 
     socket.on("game:start", () => {
       setGameStart(true);
-    })
+    });
+
+    socket.on("room:countdown", (countdown) => {
+      if (countdown === null) {
+        // for some reason, socket.io passes undefined as null
+        setCountdown(undefined);
+        return;
+      }
+      setCountdown(countdown);
+    });
 
     return () => {
       socket.emit("room:leave");
@@ -68,24 +78,29 @@ export default function Room() {
       <div className="text-snow text-5xl my-6">Room {roomId}</div>
       <div className="flex flex-row w-full">
         <div className="w-1/2">
-          {gameStart ? <Game/> :
-            <div className="text-xl">Nickname</div>
-            {name !== undefined && (
-              <input
-                className="text-night p-2 my-2"
-                value={name}
-                maxLength={15}
-                onChange={onTextChange}
-              />
-            )}
-          }
-          <br></br>
-          <button
-            className="bg-columbia_blue-300 w-1/4 rounded-lg py-2 my-10"
-            onClick={toggleState}
-          >
-            {isReady ? "Unready" : "Ready Up"}
-          </button>
+          {gameStart ? (
+            <Game />
+          ) : (
+            <div>
+              <div className="text-xl">Nickname</div>
+              {name !== undefined && (
+                <input
+                  className="text-night p-2 my-2"
+                  value={name}
+                  maxLength={15}
+                  onChange={onTextChange}
+                />
+              )}
+
+              <br></br>
+              <button
+                className="bg-columbia_blue-300 w-1/4 rounded-lg py-2 my-10"
+                onClick={toggleState}
+              >
+                {isReady ? "Unready" : "Ready Up"}
+              </button>
+            </div>
+          )}
         </div>
         <div className="w-1/2 flex flex-col items-center">
           <div className="text-xl">Players</div>
@@ -97,6 +112,11 @@ export default function Room() {
           </div>
         </div>
       </div>
+      {!gameStart ? (countdown !== undefined ? (
+        <div className="absolute left-1/2 bottom-1/2 text-9xl">{countdown}</div>
+      ) : (
+        <div className="absolute bottom-5">Waiting for Ready Up...</div>
+      )) : <div/>}
     </div>
   );
 }
