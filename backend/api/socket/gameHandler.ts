@@ -29,7 +29,7 @@ const registerGameHandlers = (io: Server, socket: Socket) => {
         game.progress(player.socketId, key);
 
         //emit to room game update
-        io.to(roomId).emit("game:update");
+        io.to(roomId).emit("game:update", game.getLines(), game.getGamePlayerInfos());
     });
 
     

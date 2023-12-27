@@ -3,6 +3,7 @@ import { ChangeEvent, useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { requestPlayerInfoDict } from "../services/socket";
 import { useSocket } from "../services/SocketContext";
+import Game from "./Game";
 import PlayerList from "./PlayerList";
 
 interface PlayerInfo {
@@ -21,6 +22,8 @@ export default function Room() {
   >(undefined);
   const [name, setName] = useState<string | undefined>(undefined);
 
+  const [gameStart, setGameStart] = useState(false);
+
   useEffect(() => {
     socket.emit("room:join", roomId);
 
@@ -32,6 +35,10 @@ export default function Room() {
     socket.on("room:update", (playerInfoDict) => {
       setPlayerInfoDict(playerInfoDict);
     });
+
+    socket.on("game:start", () => {
+      setGameStart(true);
+    })
 
     return () => {
       socket.emit("room:leave");
@@ -61,15 +68,17 @@ export default function Room() {
       <div className="text-snow text-5xl my-6">Room {roomId}</div>
       <div className="flex flex-row w-full">
         <div className="w-1/2">
-          <div className="text-xl">Nickname</div>
-          {name !== undefined && (
-            <input
-              className="text-night p-2 my-2"
-              value={name}
-              maxLength={15}
-              onChange={onTextChange}
-            />
-          )}
+          {gameStart ? <Game/> :
+            <div className="text-xl">Nickname</div>
+            {name !== undefined && (
+              <input
+                className="text-night p-2 my-2"
+                value={name}
+                maxLength={15}
+                onChange={onTextChange}
+              />
+            )}
+          }
           <br></br>
           <button
             className="bg-columbia_blue-300 w-1/4 rounded-lg py-2 my-10"
