@@ -87,14 +87,18 @@ const registerRoomHandlers = (io: Server, socket: Socket) => {
       logger.info(`All ready in room ${roomId}, starting countdown`);
       room.countdown = 3;
       io.to(roomId).emit("room:countdown", room.countdown);
-      room.startCountdown(() => {
-        logger.verbose(
-          `Emitting countdown state for ${roomId}: ${room.countdown}`
-        );
-        io.to(roomId).emit("room:countdown", room.countdown);
-      }, () => {
-        io.to(roomId).emit("game:start")
-      });
+      room.startCountdown(
+        () => {
+          logger.verbose(
+            `Emitting countdown state for ${roomId}: ${room.countdown}`
+          );
+          io.to(roomId).emit("room:countdown", room.countdown);
+        },
+        () => {
+          logger.info(`Starting game for room ${roomId}`);
+          io.to(roomId).emit("game:start");
+        }
+      );
 
       //room.createGame();
     } else {
