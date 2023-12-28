@@ -4,7 +4,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["'Exo'"],
+        sans: ["Merriweather", "serif"],
       },
       colors: {
         night: {
