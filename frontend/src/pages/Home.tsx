@@ -37,15 +37,15 @@ export default function Home() {
 
   return (
     <div className="w-full h-full flex flex-col text-center backdrop-blur-md backdrop-brightness-50">
-      <div className="text-6xl mt-40 mb-16 text-snow drop-shadow-xl font-thin">
+      <div className="text-6xl mt-36 mb-16 text-snow drop-shadow-xl font-light">
         wordchase
       </div>
       <div className="flex flex-col justify-center items-center space-y-10">
         <button
           onClick={gotoRoom}
-          className="h-full w-1/4 py-2 px-4 rounded-xl bg-amber-600 hover:bg-amber-500 text-snow border-2"
+          className="h-full w-1/4 py-2 px-4 rounded-xl bg-opacity-50 bg-amber-600 hover:bg-amber-500 text-snow border-2"
         >
-          Create Room
+          create room
         </button>
 
         <hr className="border-1 border-y-sandy_brown-900 w-1/3"></hr>
@@ -59,10 +59,10 @@ export default function Home() {
             onKeyDown={handleKeyPress}
           />
           <button
-            className="bg-amber-600 rounded-xl w-2/3 hover:bg-amber-500 border-2 text-snow"
+            className="bg-opacity-50 bg-amber-600 rounded-xl w-2/3 hover:bg-amber-500 border-2 text-snow"
             onClick={joinRoom}
           >
-            Join Room
+            join room
           </button>
         </div>
       </div>
