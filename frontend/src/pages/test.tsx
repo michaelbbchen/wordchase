@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import CanvasComponent from './CanvasComponent';
+import Canvas from './Canvas';
 
 const TestKonva = () => {
   const [lines, setLines] = useState(['Line 1', 'Line 2', 'Line 3']);
@@ -11,7 +11,7 @@ const TestKonva = () => {
   return (
     <div>
       <button onClick={addLine}>Add Line</button>
-      <CanvasComponent lines={lines} />
+      {/* <Canvas lines={lines} keyPressHandler={() => {}} /> */}
     </div>
   );
 };
