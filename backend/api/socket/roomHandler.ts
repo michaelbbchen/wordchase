@@ -23,7 +23,7 @@ const registerRoomHandlers = (io: Server, socket: Socket) => {
 
   socket.on("room:create", (roomId: string): void => {
     logger.info(`Created room: ${roomId}`);
-    RoomManager.createRoom(roomId);
+    RoomManager.createRoom(roomId, io.to(roomId));
   });
 
   socket.on("room:join", (roomId): void => {
@@ -35,7 +35,7 @@ const registerRoomHandlers = (io: Server, socket: Socket) => {
     }
 
     if (!RoomManager.hasRoom(roomId)) {
-      RoomManager.createRoom(roomId);
+      RoomManager.createRoom(roomId, io.to(roomId));
     }
     RoomManager.getRoom(roomId).join(player);
     socket.join(roomId);
@@ -97,6 +97,7 @@ const registerRoomHandlers = (io: Server, socket: Socket) => {
         () => {
           logger.info(`Starting game for room ${roomId}`);
           io.to(roomId).emit("game:start");
+          room.createGame();
         }
       );
 

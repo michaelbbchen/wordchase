@@ -3,34 +3,43 @@ import { logger } from "../../logger";
 import PlayerManager from "../../player-manager";
 import { RoomManager } from "../../room-manager";
 
+const getGame = (socketId: string) => {
+  const player = PlayerManager.getPlayer(socketId);
+  if (player === undefined) {
+    throw new Error(`Unknown player ${socketId} sent keypress`);
+  }
+
+  const roomId = player.currentRoom;
+  if (roomId === undefined) {
+    throw new Error(`Player ${socketId} sent keypress when not in room`);
+  }
+
+  const room = RoomManager.getRoom(roomId);
+  const game = room.game;
+  if (game === undefined) {
+    throw new Error(
+      `Player ${socketId} sent keypress when no game was found in room ${roomId}`
+    );
+  }
+  return game;
+};
+
 const registerGameHandlers = (io: Server, socket: Socket) => {
-    socket.on("game:keypress", (key: string) => {
-        if (key.length != 1) {
-            return;
-        }
+  socket.on("game:listen", () => {
+    logger.info(`Emitting update due to listen notification from ${socket.id}`);
+    getGame(socket.id).emitUpdate();
+  });
 
-        const player = PlayerManager.getPlayer(socket.id);
-        if (player === undefined) {
-            throw new Error(`Unknown player ${socket.id} attempted to join room`);
-        }
+  socket.on("game:keypress", (key: string) => {
+    if (key.length != 1) {
+      return;
+    }
+    logger.verbose(`Emitting update due to keypress event from ${socket.id}`);
+    const game = getGame(socket.id);
 
-        const roomId = player.currentRoom;
-        if (roomId === undefined) {
-            return;
-        }
+    game.progress(socket.id, key);
+    game.emitUpdate();
+  });
+};
 
-        const room = RoomManager.getRoom(roomId);
-
-        const game = room.game;
-        if (game === undefined) {
-            return;
-        }
-
-        game.progress(player.socketId, key);
-
-        //emit to room game update
-        io.to(roomId).emit("game:update", game.getLines(), game.getGamePlayerInfos());
-    });
-
-    
-}
+export default registerGameHandlers;

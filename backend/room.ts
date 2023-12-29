@@ -1,8 +1,10 @@
+import { BroadcastOperator, Socket } from "socket.io";
 import { Game } from "./game";
 import { logger } from "./logger";
 import { Player, PlayerInfo } from "./player";
 import { RoomManager } from "./room-manager";
 import { generateRandomString } from "./util";
+import { DefaultEventsMap } from "socket.io/dist/typed-events";
 
 export class Room {
   players: { [key: string]: PlayerInfo };
@@ -10,7 +12,10 @@ export class Room {
   countdown: undefined | number = undefined;
   countdownInterval: undefined | ReturnType<typeof setTimeout> = undefined;
 
-  constructor(public readonly roomId: string) {
+  constructor(
+    public readonly roomId: string,
+    public readonly roomSocket: BroadcastOperator<DefaultEventsMap, any>
+  ) {
     this.players = {};
   }
 
@@ -82,7 +87,6 @@ export class Room {
       tick();
     };
 
-    // incrementCountdown(); // run once without delay for responsiveness
     this.countdownInterval = setInterval(incrementCountdown, 1000);
   }
 
@@ -94,6 +98,11 @@ export class Room {
   }
 
   public createGame(): void {
-    this.game = new Game(Object.keys(this.players));
+    this.game = new Game(
+      Object.keys(this.players),
+      this.roomSocket,
+      this.roomId
+    );
+    this.game.emitUpdate();
   }
 }

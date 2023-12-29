@@ -5,6 +5,7 @@ import registerRoomHandlers from "./api/socket/roomHandler";
 import { logger } from "./logger";
 import PlayerManager from "./player-manager";
 import { Player } from "./player";
+import registerGameHandlers from "./api/socket/gameHandler";
 
 const httpServer = createServer();
 const io = new Server(httpServer, {
@@ -20,8 +21,11 @@ io.on("connection", (socket) => {
   logger.info(`Socket connected: ${socket.id}`);
   PlayerManager.addPlayer(socket.id);
 
-  logger.debug("Registering Room Handlers");
+  logger.debug(`Registering Room Handlers for ${socket.id}`);
   registerRoomHandlers(io, socket);
+
+  logger.debug(`Registering Game Handlers for ${socket.id}`);
+  registerGameHandlers(io, socket);
 
   socket.once("disconnect", () => {
     PlayerManager.removePlayer(socket.id);
