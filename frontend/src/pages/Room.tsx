@@ -69,7 +69,7 @@ export default function Room() {
 
   return (
     <div className="flex flex-col text-center items-center space-y-3 backdrop-blur-md w-full h-full backdrop-brightness-50">
-      <div className="text-snow text-5xl my-6">Room {roomId}</div>
+      <div className="text-snow text-5xl my-6 font-thin">Room {roomId}</div>
       <div className="flex flex-row w-full">
         <div className="w-1/2">
           <div className="text-xl text-snow">Nickname</div>
