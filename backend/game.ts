@@ -16,12 +16,11 @@ export class Game {
   ) {
     this.players = {};
     for (const playerId of playerIds) {
-      this.players[playerId] = new GamePlayerInfo(
-        Math.floor(this.NUM_LINES / 2)
-      );
+      this.players[playerId] = new GamePlayerInfo();
     }
+
     this.lines = Array.from({ length: this.NUM_LINES }, () =>
-      generateRandomString(20)
+      generateRandomString(10)
     );
   }
 
@@ -34,6 +33,7 @@ export class Game {
   }
 
   public progress(playerId: string, key: string): void {
+    console.log(this.lines);
     const curKey: string =
       this.lines[this.players[playerId].line][this.players[playerId].index];
     if (curKey === key) {
@@ -47,17 +47,25 @@ export class Game {
       }
     }
 
-    if (this.players[playerId].line + this.NUM_LINES / 2 >= this.lines.length) {
-      this.lines.push(generateRandomString(20));
+    let pushed = false;
+    if (this.players[playerId].line + 1 >= this.getLines().length) {
+      pushed = true;
+      this.lines.push(generateRandomString(10));
+      this.lines.shift();
     }
 
     for (const playerId in this.players) {
-      if (this.players[playerId].line < this.lines.length - this.NUM_LINES) {
+      if (pushed) {
+        this.players[playerId].line -= 1;
+        console.log(`Updated to ${this.players[playerId].line}`);
+      }
+
+      if (this.players[playerId].line < 0) {
         this.players[playerId].alive = false;
       }
     }
 
-    this.emitUpdate()
+    this.emitUpdate();
   }
 
   public emitUpdate(): void {

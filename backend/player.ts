@@ -14,11 +14,7 @@ export class PlayerInfo {
 }
 
 export class GamePlayerInfo {
-  line: number;
+  line: number = 0;
   index: number = 0;
   alive: boolean = true;
-  
-  constructor(line: number) {
-    this.line = line;
-  }
 }
