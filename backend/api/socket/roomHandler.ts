@@ -37,10 +37,8 @@ const registerRoomHandlers = (io: Server, socket: Socket) => {
     if (!RoomManager.hasRoom(roomId)) {
       RoomManager.createRoom(roomId, io.to(roomId));
     }
-    RoomManager.getRoom(roomId).join(player);
     socket.join(roomId);
-
-    io.to(roomId).emit("room:update", RoomManager.getRoom(roomId).players);
+    RoomManager.getRoom(roomId).join(player);
   });
 
   socket.on("room:leave", () => {
@@ -57,10 +55,6 @@ const registerRoomHandlers = (io: Server, socket: Socket) => {
 
     socket.leave(player.currentRoom);
     room.leave(player);
-
-    if (RoomManager.hasRoom(roomId)) {
-      io.to(roomId).emit("room:update", RoomManager.getRoom(roomId).players);
-    }
   });
 
   socket.on("room:setReady", (isReady: boolean) => {
@@ -107,8 +101,6 @@ const registerRoomHandlers = (io: Server, socket: Socket) => {
       room.stopCountdown();
       io.to(roomId).emit("room:countdown", room.countdown);
     }
-
-    io.to(roomId).emit("room:update", RoomManager.getRoom(roomId).players);
   });
 
   socket.on("room:changeName", (newName: string) => {
@@ -129,7 +121,6 @@ const registerRoomHandlers = (io: Server, socket: Socket) => {
     RoomManager.getRoom(player.currentRoom).setName(player, newName);
 
     const roomId = player.currentRoom;
-    io.to(roomId).emit("room:update", RoomManager.getRoom(roomId).players);
   });
 };
 

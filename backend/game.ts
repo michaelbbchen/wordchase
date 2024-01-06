@@ -33,9 +33,13 @@ export class Game {
   }
 
   public progress(playerId: string, key: string): void {
+    if (this.players[playerId].alive === false) {
+        return;
+    }
     console.log(this.lines);
     const curKey: string =
       this.lines[this.players[playerId].line][this.players[playerId].index];
+    //logger.info(`Pressed ${key} expecting ${curKey}`);
     if (curKey === key) {
       this.players[playerId].index += 1;
       if (
@@ -61,6 +65,7 @@ export class Game {
       }
 
       if (this.players[playerId].line < 0) {
+        logger.info(`Player ${playerId} has died`);
         this.players[playerId].alive = false;
       }
     }

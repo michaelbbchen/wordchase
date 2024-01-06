@@ -38,7 +38,7 @@ const registerGameHandlers = (io: Server, socket: Socket) => {
     const game = getGame(socket.id);
 
     game.progress(socket.id, key);
-    game.emitUpdate();
+    //game.emitUpdate();
   });
 };
 

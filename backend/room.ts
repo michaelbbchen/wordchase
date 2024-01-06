@@ -27,6 +27,7 @@ export class Room {
       `${player.socketId} assigned name ${this.players[player.socketId].name}`
     );
     player.currentRoom = this.roomId;
+    this.roomSocket.emit("room:update", this.players);
   }
 
   public leave(player: Player): void {
@@ -41,6 +42,8 @@ export class Room {
     player.currentRoom = undefined;
     logger.info(`${player.socketId} left the room ${this.roomId}`);
 
+    this.roomSocket.emit("room:update", this.players);
+
     if (Object.keys(this.players).length === 0) {
       logger.verbose(`There are no remaining players in room ${this.roomId}`);
       RoomManager.deleteRoom(this.roomId);
@@ -54,6 +57,8 @@ export class Room {
       );
     }
     this.players[player.socketId].isReady = ready;
+
+    this.roomSocket.emit("room:update", this.players);
   }
 
   public setName(player: Player, name: string): void {
@@ -63,6 +68,8 @@ export class Room {
       );
     }
     this.players[player.socketId].name = name;
+
+    this.roomSocket.emit("room:update", this.players);
   }
 
   public isAllReady(): boolean {
