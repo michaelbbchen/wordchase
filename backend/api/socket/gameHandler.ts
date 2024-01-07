@@ -42,4 +42,8 @@ const registerGameHandlers = (io: Server, socket: Socket) => {
   });
 };
 
+const destroyGameHandlers = (io: Server, socket: Socket) => {
+    socket.removeAllListeners("game:listen");
+    socket.removeAllListeners("game:keypress")
+}
 export default registerGameHandlers;

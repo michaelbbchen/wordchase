@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Stage, Layer, Text } from "react-konva";
+import { Stage, Layer, Text, Circle } from "react-konva";
 import { useSocket } from "../services/SocketContext";
 import { GamePlayerState } from "./Game";
 
@@ -65,6 +65,21 @@ const Canvas: React.FC<CanvasProps> = ({
             );
           });
         })}
+      </Layer>
+      <Layer>
+        {
+          Object.entries(playerInfos).map(([key, playerInfo])=>{
+            return (
+            <Circle
+              x={100 + 30 * playerInfo.index}       // x-coordinate of the center
+              y={100 + 25 * playerInfo.line - 10}       // y-coordinate of the center
+              radius={5}   // radius of the circle
+              fill={playerInfo.color}    // fill color
+              stroke="black" // stroke color
+              strokeWidth={2} // stroke width
+            />)
+          })
+        }
       </Layer>
     </Stage>
   );

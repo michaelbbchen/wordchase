@@ -8,6 +8,7 @@ export class Game {
   players: { [key: string]: GamePlayerInfo };
   lines: string[];
   NUM_LINES: number = 5;
+  ended: boolean = false;
 
   constructor(
     playerIds: string[],
@@ -32,10 +33,21 @@ export class Game {
     return this.players;
   }
 
+  public numAlive(): number {
+    var count: number = 0;
+    for (const playerId in this.players) {
+      if (this.players[playerId].alive) {
+        count += 1;
+      }
+    }
+    return count;
+  }
+
   public progress(playerId: string, key: string): void {
     if (this.players[playerId].alive === false) {
       return;
     }
+    console.log(this.lines);
     const curKey: string =
       this.lines[this.players[playerId].line][this.players[playerId].index];
     //logger.info(`Pressed ${key} expecting ${curKey}`);
@@ -60,6 +72,7 @@ export class Game {
     for (const playerId in this.players) {
       if (pushed) {
         this.players[playerId].line -= 1;
+        console.log(`Updated to ${this.players[playerId].line}`);
       }
 
       if (this.players[playerId].line < 0) {
@@ -73,10 +86,20 @@ export class Game {
 
   public emitUpdate(): void {
     logger.info(`Emitting game update for ${this.roomId}`);
-    this.roomSocket.emit(
-      "game:update",
-      this.getLines(),
-      this.getGamePlayerInfos()
-    );
+
+    if (this.numAlive() > 1) {
+      this.roomSocket.emit(
+        "game:update",
+        this.getLines(),
+        this.getGamePlayerInfos()
+      );
+    } else {
+      this.ended = true;
+      this.roomSocket.emit(
+        "game:end",
+        this.getLines(),
+        this.getGamePlayerInfos()
+      );
+    }
   }
 }
