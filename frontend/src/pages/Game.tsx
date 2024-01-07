@@ -6,6 +6,7 @@ export interface GamePlayerState {
     line: number;
     index: number;
     alive: boolean;
+    color: string;
   };
 }
 

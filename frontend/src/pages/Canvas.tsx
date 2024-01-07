@@ -25,6 +25,30 @@ const Canvas: React.FC<CanvasProps> = ({
     keyPressHandler(e.key);
   };
 
+  const getFontColor = (line: number, index: number): string => {
+    if (
+      line === playerInfos[socket.id].line &&
+      index === playerInfos[socket.id].index
+    ) {
+      return "#00ff00";
+    }
+
+    for (let playerId in playerInfos) {
+      if (
+        playerInfos[playerId].line === line &&
+        playerInfos[playerId].index === index
+      ) {
+        return playerInfos[playerId].color;
+      }
+    }
+
+    return line < playerInfos[socket.id].line ||
+      (line === playerInfos[socket.id].line &&
+        index < playerInfos[socket.id].index)
+      ? "#474747"
+      : "#ffffff";
+  };
+
   return (
     <Stage width={window.innerWidth} height={window.innerHeight}>
       <Layer>
@@ -36,13 +60,7 @@ const Canvas: React.FC<CanvasProps> = ({
                 x={100 + 30 * j}
                 y={100 + 25 * i}
                 fontSize={20}
-                fill={
-                  i < playerInfos[socket.id].line ||
-                  (i == playerInfos[socket.id].line &&
-                    j < playerInfos[socket.id].index)
-                    ? "#ff0000"
-                    : "#ffffff"
-                }
+                fill={getFontColor(i, j)}
               />
             );
           });

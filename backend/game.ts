@@ -34,9 +34,8 @@ export class Game {
 
   public progress(playerId: string, key: string): void {
     if (this.players[playerId].alive === false) {
-        return;
+      return;
     }
-    console.log(this.lines);
     const curKey: string =
       this.lines[this.players[playerId].line][this.players[playerId].index];
     //logger.info(`Pressed ${key} expecting ${curKey}`);
@@ -61,7 +60,6 @@ export class Game {
     for (const playerId in this.players) {
       if (pushed) {
         this.players[playerId].line -= 1;
-        console.log(`Updated to ${this.players[playerId].line}`);
       }
 
       if (this.players[playerId].line < 0) {
