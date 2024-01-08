@@ -122,6 +122,25 @@ const registerRoomHandlers = (io: Server, socket: Socket) => {
 
     const roomId = player.currentRoom;
   });
+
+  socket.on("room:rejoin", () => {
+    logger.verbose(`${socket.id} attempts to rejoin its room`);
+
+    const player = PlayerManager.getPlayer(socket.id);
+    if (player === undefined) {
+      throw Error(`Unknown player ${socket.id} attempted to rejoin room`);
+    }
+
+    if (player.currentRoom === undefined) {
+      logger.warn(
+        `Player ${socket.id} attempted to rejoin room when not in room`
+      );
+      return;
+    }
+
+    RoomManager.getRoom(player.currentRoom).resetPlayerInfos();
+    socket.emit("game:leave");
+  })
 };
 
 export default registerRoomHandlers;

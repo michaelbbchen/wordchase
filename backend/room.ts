@@ -106,10 +106,16 @@ export class Room {
 
   public resetPlayerInfos(): void {
     logger.info(`${this.roomId}`);
-    for(const playerId in this.players){
-      logger.info(`changing ${playerId} ready status from ${this.players[playerId].isReady} to false`);
-      this.players[playerId].isReady = false;
-      
+    if (this.game != undefined) {
+      for (const playerId in this.players) {
+        logger.info(
+          `changing ${playerId} ready status from ${this.players[playerId].isReady} to false`
+        );
+        this.players[playerId].isReady = false;
+      }
+      this.game = undefined;
+      this.countdown = undefined;
+      this.countdownInterval = undefined;
     }
 
     this.roomSocket.emit("room:update", this.players);

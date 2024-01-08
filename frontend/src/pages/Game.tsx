@@ -23,7 +23,7 @@ export default function Game() {
     });
 
     socket.on("game:end", (lines, playerInfos) => {
-        setLines(lines);
+      setLines(lines);
       setPlayerInfos(playerInfos);
       setEnd(true);
     });
@@ -34,16 +34,25 @@ export default function Game() {
     socket.emit("game:keypress", key);
   };
 
+  const backToRoomFunction = () => {
+    socket.emit("room:rejoin");
+  };
+
   return end ? (
-    <div>
-      <div>
+    <div className="flex align-center text-center items-center w-full h-full">
+      <div className="w-full h-full">
         {playerInfos &&
           (playerInfos[socket.id].alive ? (
             <div className="text-6xl my-6">You win!!!</div>
           ) : (
             <div className="text-6xl my-6">You lose</div>
           ))}
-          <button className="bg-columbia_blue-300 rounded-xl w-2/3 hover:bg-columbia_blue-200">Back to room</button>
+        <button
+          className="bg-columbia_blue-300 rounded-xl w-2/3 hover:bg-columbia_blue-200"
+          onClick={backToRoomFunction}
+        >
+          Back to room
+        </button>
       </div>
     </div>
   ) : (

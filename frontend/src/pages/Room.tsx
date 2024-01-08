@@ -22,7 +22,7 @@ export default function Room() {
   >(undefined);
   const [name, setName] = useState<string | undefined>(undefined);
 
-  const [gameStart, setGameStart] = useState(false);
+  const [inGame, setInGame] = useState(false);
   const [countdown, setCountdown] = useState<number | undefined>(undefined);
 
   useEffect(() => {
@@ -38,7 +38,12 @@ export default function Room() {
     });
 
     socket.on("game:start", () => {
-      setGameStart(true);
+      setInGame(true);
+    });
+
+    socket.on("game:leave", () => {
+      setInGame(false);
+      setIsReady(false);
     });
 
     socket.on("room:countdown", (countdown) => {
@@ -73,7 +78,7 @@ export default function Room() {
     }
   };
 
-  return gameStart ? (
+  return inGame ? (
     <Game />
   ) : (
     <>
@@ -110,7 +115,7 @@ export default function Room() {
             </div>
           </div>
         </div>
-        {!gameStart ? (
+        {!inGame ? (
           countdown !== undefined ? (
             <div className="absolute left-1/2 bottom-1/2 text-9xl">
               {countdown}
