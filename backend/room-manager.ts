@@ -1,17 +1,22 @@
+import { BroadcastOperator, Socket } from "socket.io";
 import { logger } from "./logger";
 import { Room } from "./room";
+import { DefaultEventsMap } from "socket.io/dist/typed-events";
 
 export namespace RoomManager {
   let rooms: { [roomId: string]: Room } = {};
 
-  export function createRoom(roomId: string) {
+  export function createRoom(
+    roomId: string,
+    roomSocket: BroadcastOperator<DefaultEventsMap, any>
+  ) {
     if (roomId in rooms) {
       logger.error(`Cannot create room: ${roomId} already exists`);
       return;
     }
 
     logger.verbose(`Room ${roomId} was created`);
-    rooms[roomId] = new Room(roomId);
+    rooms[roomId] = new Room(roomId, roomSocket);
   }
 
   export function deleteRoom(roomId: string) {

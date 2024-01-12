@@ -1,14 +1,21 @@
+import { BroadcastOperator, Socket } from "socket.io";
+import { Game } from "./game";
 import { logger } from "./logger";
 import { Player, PlayerInfo } from "./player";
 import { RoomManager } from "./room-manager";
 import { generateRandomString } from "./util";
+import { DefaultEventsMap } from "socket.io/dist/typed-events";
 
 export class Room {
   players: { [key: string]: PlayerInfo };
+  game: Game | undefined = undefined;
   countdown: undefined | number = undefined;
   countdownInterval: undefined | ReturnType<typeof setTimeout> = undefined;
 
-  constructor(public readonly roomId: string) {
+  constructor(
+    public readonly roomId: string,
+    public readonly roomSocket: BroadcastOperator<DefaultEventsMap, any>
+  ) {
     this.players = {};
   }
 
@@ -20,6 +27,7 @@ export class Room {
       `${player.socketId} assigned name ${this.players[player.socketId].name}`
     );
     player.currentRoom = this.roomId;
+    this.roomSocket.emit("room:update", this.players);
   }
 
   public leave(player: Player): void {
@@ -34,6 +42,8 @@ export class Room {
     player.currentRoom = undefined;
     logger.info(`${player.socketId} left the room ${this.roomId}`);
 
+    this.roomSocket.emit("room:update", this.players);
+
     if (Object.keys(this.players).length === 0) {
       logger.verbose(`There are no remaining players in room ${this.roomId}`);
       RoomManager.deleteRoom(this.roomId);
@@ -47,6 +57,8 @@ export class Room {
       );
     }
     this.players[player.socketId].isReady = ready;
+
+    this.roomSocket.emit("room:update", this.players);
   }
 
   public setName(player: Player, name: string): void {
@@ -56,6 +68,8 @@ export class Room {
       );
     }
     this.players[player.socketId].name = name;
+
+    this.roomSocket.emit("room:update", this.players);
   }
 
   public isAllReady(): boolean {
@@ -67,19 +81,19 @@ export class Room {
     return true;
   }
 
-  public startCountdown(callback: () => void): void {
+  public startCountdown(tick: () => void, complete: () => void): void {
     const incrementCountdown = () => {
       if (this.countdown === 0) {
         clearInterval(this.countdownInterval);
+        complete();
         return;
       }
       if (this.countdown !== undefined) {
         this.countdown--;
       }
-      callback();
+      tick();
     };
 
-    // incrementCountdown(); // run once without delay for responsiveness
     this.countdownInterval = setInterval(incrementCountdown, 1000);
   }
 
@@ -88,5 +102,31 @@ export class Room {
       clearInterval(this.countdownInterval);
       this.countdownInterval = undefined;
     }
+  }
+
+  public resetPlayerInfos(): void {
+    logger.info(`${this.roomId}`);
+    if (this.game != undefined) {
+      for (const playerId in this.players) {
+        logger.info(
+          `changing ${playerId} ready status from ${this.players[playerId].isReady} to false`
+        );
+        this.players[playerId].isReady = false;
+      }
+      this.game = undefined;
+      this.countdown = undefined;
+      this.countdownInterval = undefined;
+    }
+
+    this.roomSocket.emit("room:update", this.players);
+  }
+
+  public createGame(): void {
+    this.game = new Game(
+      Object.keys(this.players),
+      this.roomSocket,
+      this.roomId
+    );
+    this.game.emitUpdate();
   }
 }

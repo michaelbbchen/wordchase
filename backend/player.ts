@@ -1,3 +1,5 @@
+import { colorGenerator } from "./util";
+
 // Represents a player in a game, one to one with socket connections
 export class Player {
   currentRoom: string | undefined;
@@ -11,4 +13,11 @@ export class PlayerInfo {
   constructor(name: string) {
     this.name = name;
   }
+}
+
+export class GamePlayerInfo {
+  line: number = 0;
+  index: number = 0;
+  alive: boolean = true;
+  color: string = colorGenerator.next().value || "#ffffff";
 }
