@@ -47,7 +47,8 @@ next-env.d.ts
 /coverage
 
 # production
-/build
+frontend/build
+backend/build
 
 # misc
 .DS_Store

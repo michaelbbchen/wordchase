@@ -6,13 +6,33 @@ import { logger } from "./logger";
 import PlayerManager from "./player-manager";
 import { Player } from "./player";
 import registerGameHandlers from "./api/socket/gameHandler";
+import path from "path";
+import { appendFile } from "fs";
+import express from "express";
 
-const httpServer = createServer();
+const app = express();
+const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
     origin: "*",
     methods: ["GET", "POST"],
   },
+});
+
+const _dirname = path.dirname("");
+const buildPath = path.join(__dirname, "../frontend/build");
+
+app.use(express.static(buildPath));
+
+app.get("/*", function (req, res) {
+  res.sendFile(
+    path.join(__dirname, "../client/build/index.html"),
+    function (err) {
+      if (err) {
+        res.status(500).send(err);
+      }
+    }
+  );
 });
 
 const port = 3001;
