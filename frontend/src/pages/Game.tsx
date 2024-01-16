@@ -41,7 +41,7 @@ export default function Game() {
   return end ? (
     <div className="flex align-center text-center items-center w-full h-full">
       <div className="w-full h-full">
-        {playerInfos &&
+        {playerInfos && socket.id &&
           (playerInfos[socket.id].alive ? (
             <div className="text-6xl my-6">You win!!!</div>
           ) : (

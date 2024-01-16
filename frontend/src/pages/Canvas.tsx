@@ -26,6 +26,10 @@ const Canvas: React.FC<CanvasProps> = ({
   };
 
   const getFontColor = (line: number, index: number): string => {
+    if (socket.id === undefined) {
+      return "#ffffff";
+    }
+
     if (
       line === playerInfos[socket.id].line &&
       index === playerInfos[socket.id].index

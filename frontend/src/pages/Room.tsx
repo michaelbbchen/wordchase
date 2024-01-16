@@ -30,7 +30,7 @@ export default function Room() {
 
     requestPlayerInfoDict(socket, roomId!).then((playerInfoDict) => {
       setPlayerInfoDict(playerInfoDict);
-      setName(playerInfoDict[socket.id].name);
+      setName(playerInfoDict[socket.id!].name);
     });
 
     socket.on("room:update", (playerInfoDict) => {
