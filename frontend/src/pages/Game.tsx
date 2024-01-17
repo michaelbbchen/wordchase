@@ -28,7 +28,7 @@ export default function Game() {
       setEnd(true);
     });
     socket.emit("game:listen");
-  }, []);
+  });
 
   const keyPressHandler = (key: string) => {
     socket.emit("game:keypress", key);

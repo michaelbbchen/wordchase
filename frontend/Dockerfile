@@ -3,13 +3,12 @@ FROM node:alpine
 COPY . /app
 WORKDIR /app
 
-# RUN bun install --production
-RUN npm install
-
-RUN npm run build
-# RUN bun build --entrypoints ./src/index --outdir ./build
+RUN ["npm", "install"]
+# RUN npm install
+RUN ["npm", "run", "build"]
+# RUN bun build --entrypoints ./src/index --outdir ./build --target browser
 
 EXPOSE 3000
 CMD [ "npx", "serve", "-s", "build" ]
 # CMD npm run start
-# CMD [ "bun", "run", "src/index.tsx"]
+# CMD [ "bunx", "serve", "-s", "build"]
