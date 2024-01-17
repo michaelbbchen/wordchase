@@ -3,9 +3,9 @@ FROM node:alpine
 COPY . /app
 WORKDIR /app
 
-RUN ["npm", "install"]
+# RUN ["npm", "install"]
 # RUN npm install
-RUN ["npm", "run", "build"]
+# RUN ["npm", "run", "build"]
 # RUN bun build --entrypoints ./src/index --outdir ./build --target browser
 
 EXPOSE 3000
