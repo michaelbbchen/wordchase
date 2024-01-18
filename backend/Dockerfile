@@ -7,5 +7,5 @@ RUN bun install
 
 EXPOSE 3001
 # CMD node --loader ts-node/esm app.ts
-CMD bun start
+CMD bun run app.ts
 
