@@ -1,14 +1,16 @@
-FROM node:alpine
-# FROM oven/bun as base
+# FROM node:alpine
+FROM oven/bun as base
 COPY . /app
 WORKDIR /app
 
 # RUN ["npm", "install"]
-# RUN npm install
+
+# ENV SOCKET_SERVER=10.43.226.143:3001
 # RUN ["npm", "run", "build"]
+# RUN ["bun", "run", "build"]
 # RUN bun build --entrypoints ./src/index --outdir ./build --target browser
 
 EXPOSE 3000
-CMD [ "npx", "serve", "-s", "build" ]
+# CMD [ "npx", "serve", "-s", "build" ]
 # CMD npm run start
-# CMD [ "bunx", "serve", "-s", "build"]
+CMD [ "bunx", "serve", "-s", "build"]
