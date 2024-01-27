@@ -1,3 +1,5 @@
+import * as fs from 'fs';
+
 export const generateRandomString = (length: number = 4): string => {
   const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   let randomString = "";
@@ -92,3 +94,16 @@ function* sequentialColorGenerator(): Generator<string, void, void> {
 }
 
 export const colorGenerator = sequentialColorGenerator();
+
+const filePath = "words.txt";
+const words = fs.readFileSync(filePath, 'utf8').split('\n');
+
+export const getRandomWords = (n : number): string => {
+  const indices: number[] = []
+
+  for(let i = 0; i < n; i++){
+    indices.push(Math.floor(Math.random() * words.length));
+  }
+
+  return indices.map(ind => words[ind]).join(" ");
+}

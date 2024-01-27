@@ -61,9 +61,10 @@ const Canvas: React.FC<CanvasProps> = ({
             return (
               <Text
                 text={c}
-                x={100 + 30 * j}
+                x={100 + 15 * j}
                 y={100 + 25 * i}
                 fontSize={20}
+                fontFamily = "monospace"
                 fill={getFontColor(i, j)}
               />
             );
@@ -75,7 +76,7 @@ const Canvas: React.FC<CanvasProps> = ({
           Object.entries(playerInfos).map(([key, playerInfo])=>{
             return (
             <Circle
-              x={100 + 30 * playerInfo.index}       // x-coordinate of the center
+              x={100 + 15 * playerInfo.index}       // x-coordinate of the center
               y={100 + 25 * playerInfo.line - 10}       // y-coordinate of the center
               radius={5}   // radius of the circle
               fill={playerInfo.color}    // fill color
