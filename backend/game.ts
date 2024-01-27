@@ -1,7 +1,7 @@
 import { BroadcastOperator, Socket } from "socket.io";
 import { logger } from "./logger";
 import { GamePlayerInfo } from "./player";
-import { generateRandomString } from "./util";
+import { generateRandomString, getRandomWords } from "./util";
 import { DefaultEventsMap } from "socket.io/dist/typed-events";
 
 export class Game {
@@ -9,6 +9,7 @@ export class Game {
   lines: string[];
   NUM_LINES: number = 5;
   ended: boolean = false;
+  rowGenerator: () => string = (): string => { return getRandomWords(5) };
 
   constructor(
     playerIds: string[],
@@ -21,7 +22,7 @@ export class Game {
     }
 
     this.lines = Array.from({ length: this.NUM_LINES }, () =>
-      generateRandomString(10)
+      this.rowGenerator()
     );
   }
 
@@ -65,7 +66,7 @@ export class Game {
     let pushed = false;
     if (this.players[playerId].line + 1 >= this.getLines().length) {
       pushed = true;
-      this.lines.push(generateRandomString(10));
+      this.lines.push(this.rowGenerator());
       this.lines.shift();
     }
 
