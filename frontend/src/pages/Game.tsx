@@ -40,15 +40,16 @@ export default function Game() {
 
   return end ? (
     <div className="flex align-center text-center items-center w-full h-full">
-      <div className="w-full h-full">
+      <div className="w-full h-1/2 text-snow">
+        {/* We should replace this with a leaderboard */}
         {playerInfos && socket.id &&
           (playerInfos[socket.id].alive ? (
-            <div className="text-6xl my-6">You win!!!</div>
+            <div className="text-6xl my-6">You win!</div>
           ) : (
-            <div className="text-6xl my-6">You lose</div>
+            <div className="text-6xl my-6">You lost!</div>
           ))}
         <button
-          className="bg-columbia_blue-300 rounded-xl w-2/3 hover:bg-columbia_blue-200"
+          className="bg-columbia_blue-300 rounded-xl w-1/5 hover:bg-columbia_blue-200 text-night"
           onClick={backToRoomFunction}
         >
           Back to room
