@@ -9,10 +9,7 @@ export const generateRandomString = (): string => {
   return randomString;
 };
 
-export interface PlayerInfo {
-  name: string,
-  isReady: boolean
-}
+
 
 export const isValidRoomId = (roomId: string): boolean => {
   return /^[a-zA-Z]*$/.test(roomId) && roomId.length === 4;

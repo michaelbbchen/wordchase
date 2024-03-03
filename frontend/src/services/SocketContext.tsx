@@ -7,8 +7,10 @@ interface SocketProviderProps {
   children: ReactNode;
 }
 
+
 export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
-  const socket = io(process.env.SOCKET_SERVER ?? "http://localhost:3001");
+  console.log(`socket server ${process.env.REACT_APP_SOCKET_SERVER ?? "http://localhost:3001"}`);
+  const socket = io(process.env.REACT_APP_SOCKET_SERVER ?? "http://localhost:3001");
 
   return (
     <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>

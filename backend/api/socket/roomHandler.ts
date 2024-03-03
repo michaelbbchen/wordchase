@@ -23,7 +23,7 @@ const registerRoomHandlers = (io: Server, socket: Socket) => {
 
   socket.on("room:create", (roomId: string): void => {
     logger.info(`Created room: ${roomId}`);
-    RoomManager.createRoom(roomId);
+    RoomManager.createRoom(roomId, io.to(roomId));
   });
 
   socket.on("room:join", (roomId): void => {
@@ -35,12 +35,10 @@ const registerRoomHandlers = (io: Server, socket: Socket) => {
     }
 
     if (!RoomManager.hasRoom(roomId)) {
-      RoomManager.createRoom(roomId);
+      RoomManager.createRoom(roomId, io.to(roomId));
     }
-    RoomManager.getRoom(roomId).join(player);
     socket.join(roomId);
-
-    io.to(roomId).emit("room:update", RoomManager.getRoom(roomId).players);
+    RoomManager.getRoom(roomId).join(player);
   });
 
   socket.on("room:leave", () => {
@@ -57,10 +55,6 @@ const registerRoomHandlers = (io: Server, socket: Socket) => {
 
     socket.leave(player.currentRoom);
     room.leave(player);
-
-    if (RoomManager.hasRoom(roomId)) {
-      io.to(roomId).emit("room:update", RoomManager.getRoom(roomId).players);
-    }
   });
 
   socket.on("room:setReady", (isReady: boolean) => {
@@ -87,19 +81,26 @@ const registerRoomHandlers = (io: Server, socket: Socket) => {
       logger.info(`All ready in room ${roomId}, starting countdown`);
       room.countdown = 3;
       io.to(roomId).emit("room:countdown", room.countdown);
-      room.startCountdown(() => {
-        logger.verbose(
-          `Emitting countdown state for ${roomId}: ${room.countdown}`
-        );
-        io.to(roomId).emit("room:countdown", room.countdown);
-      });
+      room.startCountdown(
+        () => {
+          logger.verbose(
+            `Emitting countdown state for ${roomId}: ${room.countdown}`
+          );
+          io.to(roomId).emit("room:countdown", room.countdown);
+        },
+        () => {
+          logger.info(`Starting game for room ${roomId}`);
+          io.to(roomId).emit("game:start");
+          room.createGame();
+        }
+      );
+
+      //room.createGame();
     } else {
       room.countdown = undefined;
       room.stopCountdown();
       io.to(roomId).emit("room:countdown", room.countdown);
     }
-
-    io.to(roomId).emit("room:update", RoomManager.getRoom(roomId).players);
   });
 
   socket.on("room:changeName", (newName: string) => {
@@ -120,8 +121,26 @@ const registerRoomHandlers = (io: Server, socket: Socket) => {
     RoomManager.getRoom(player.currentRoom).setName(player, newName);
 
     const roomId = player.currentRoom;
-    io.to(roomId).emit("room:update", RoomManager.getRoom(roomId).players);
   });
+
+  socket.on("room:rejoin", () => {
+    logger.verbose(`${socket.id} attempts to rejoin its room`);
+
+    const player = PlayerManager.getPlayer(socket.id);
+    if (player === undefined) {
+      throw Error(`Unknown player ${socket.id} attempted to rejoin room`);
+    }
+
+    if (player.currentRoom === undefined) {
+      logger.warn(
+        `Player ${socket.id} attempted to rejoin room when not in room`
+      );
+      return;
+    }
+
+    RoomManager.getRoom(player.currentRoom).resetPlayerInfos();
+    socket.emit("game:leave");
+  })
 };
 
 export default registerRoomHandlers;
