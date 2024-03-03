@@ -17,13 +17,12 @@
     "react-konva": "^18.2.10",
     "react-router-dom": "^6.21.0",
     "react-scripts": "^5.0.1",
-    "serve": "^14.2.1",
     "socket.io-client": "^4.7.2",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
     "start": "./node_modules/.bin/react-scripts start",
-    "build": "react-scripts build",
+    "build": "react-scripts --max_old_space_size=4096 build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -49,6 +48,8 @@
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "autoprefixer": "^10.4.16",
     "postcss": "^8.4.32",
-    "tailwindcss": "^3.4.0"
+    "serve": "^14.2.1",
+    "tailwindcss": "^3.4.0",
+    "typescript": "^5.3.3"
   }
 }

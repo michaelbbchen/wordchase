@@ -12,6 +12,6 @@ services:
       context: ./frontend # Specifies the build context directory for the frontend
       dockerfile: Dockerfile # Specifies the Dockerfile to use for building the backend
     ports:
-      - 3000:3000 # Maps the container's port 3000 to the host's port 3000
+      - 3000:80 # Maps the container's port 3000 to the host's port 3000
     depends_on:
       - server
