@@ -56,8 +56,8 @@ export default function Game() {
       </div>
     </div>
   ) : (
-    <div className="flex align-center text-center items-center w-full h-full">
-      <div className="w-full h-full">
+    <div className="flex justify-center align-center text-center items-center w-full h-full overflow-hidden">
+      <div className="h-1/2 w-1/2">
         {playerInfos && (
           <Canvas
             lines={lines}

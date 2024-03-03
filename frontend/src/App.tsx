@@ -6,7 +6,7 @@ import "./App.css";
 function App() {
   return (
     <>
-      <div className="background-image"></div>
+      <div className="background-image bg-center"></div>
       <div className="App w-screen h-screen bg-transparent text-night">
         <Router>
           <Routes>

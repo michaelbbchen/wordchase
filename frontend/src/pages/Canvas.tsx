@@ -27,7 +27,7 @@ const Canvas: React.FC<CanvasProps> = ({
 
   const getFontColor = (line: number, index: number): string => {
     if (socket.id === undefined) {
-      return "#ffffff";
+      return "#000000";
     }
 
     if (
@@ -49,8 +49,8 @@ const Canvas: React.FC<CanvasProps> = ({
     return line < playerInfos[socket.id].line ||
       (line === playerInfos[socket.id].line &&
         index < playerInfos[socket.id].index)
-      ? "#474747"
-      : "#ffffff";
+      ? "#878787"
+      : "#070707";
   };
 
   return (
@@ -61,8 +61,8 @@ const Canvas: React.FC<CanvasProps> = ({
             return (
               <Text
                 text={c}
-                x={100 + 15 * j}
-                y={100 + 25 * i}
+                x={100+15 * j}
+                y={20+25 * i}
                 fontSize={20}
                 fontFamily = "monospace"
                 fill={getFontColor(i, j)}
@@ -76,8 +76,8 @@ const Canvas: React.FC<CanvasProps> = ({
           Object.entries(playerInfos).map(([key, playerInfo])=>{
             return (
             <Circle
-              x={100 + 15 * playerInfo.index}       // x-coordinate of the center
-              y={100 + 25 * playerInfo.line - 10}       // y-coordinate of the center
+              x={100+15 * playerInfo.index}       // x-coordinate of the center
+              y={20+25 * playerInfo.line - 10}       // y-coordinate of the center
               radius={5}   // radius of the circle
               fill={playerInfo.color}    // fill color
               stroke="black" // stroke color
