@@ -1,0 +1,36 @@
+name: Build and Deploy Docker Images
+
+on:
+  push:
+    branches:
+      - main  # Set to the branch name you use for deployment
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Build Docker images with Docker Compose
+      run: docker-compose build
+
+    - name: Save Docker images as tar files
+      run: |
+        docker save -o wordchase-client.tar wordchase-client:latest
+        docker save -o wordchase-server.tar wordchase-server:latest
+
+    - name: Install SSH key
+      uses: webfactory/ssh-agent@v0.5.3
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+    - name: Transfer Docker images to EC2 instance via SCP
+      run: |
+        scp wordchase-client.tar ec2-user@${{ secrets.EC2_HOST }}:/wordchase
+        scp wordchase-client.tar ec2-user@${{ secrets.EC2_HOST }}:/wordchase
+        # Repeat for as many images as you have
+
+    - name: Load Docker images on EC2 instance
+      run: ssh ec2-user@${{ secrets.EC2_HOST }} 'docker load -i /wordchase/wordchase-client.tar; docker load -i /wordchase/wordchase-server.tar; docker run wordchase-server; docker run wordchase-client'
+      # Repeat the `docker load` command for as many images as you have
