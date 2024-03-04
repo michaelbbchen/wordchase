@@ -2,12 +2,14 @@ version: "3.8"
 
 services:
   server: # Defines the 'server' service for backend
+    image: wc-server
     build: # Builds the backend using the provided Dockerfile
       context: ./backend # Specifies the build context directory for the backend
       dockerfile: Dockerfile # Specifies the Dockerfile to use for building the backend
     ports:
       - 3001:3001 # Maps the container's port 3001 to the host's port 3001
   client: # Defines the 'client' service for frontend
+    image: wc-client
     build: # Builds frontend using the provided Dockerfile
       context: ./frontend # Specifies the build context directory for the frontend
       dockerfile: Dockerfile # Specifies the Dockerfile to use for building the backend
