@@ -17,8 +17,8 @@ jobs:
 
     - name: Save Docker images as tar files
       run: |
-        docker save -o wordchase-client.tar wordchase-client
-        docker save -o wordchase-server.tar wordchase-server
+        docker save -o client.tar wc-client
+        docker save -o wordchase-server.tar wc-server
 
     - name: Install SSH key
       uses: webfactory/ssh-agent@v0.5.3
