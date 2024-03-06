@@ -4,10 +4,8 @@ import registerRoomHandlers from "./api/socket/roomHandler";
 
 import { logger } from "./logger";
 import PlayerManager from "./player-manager";
-import { Player } from "./player";
 import registerGameHandlers from "./api/socket/gameHandler";
 import path from "path";
-import { appendFile } from "fs";
 import express from "express";
 
 const app = express();
@@ -19,12 +17,11 @@ const io = new Server(httpServer, {
   },
 });
 
-const _dirname = path.dirname("");
 const buildPath = path.join(__dirname, "../frontend/build");
 
 app.use(express.static(buildPath));
 
-app.get("/*", function (req, res) {
+app.get("/*", function (_, res) {
   res.sendFile(
     path.join(__dirname, "../client/build/index.html"),
     function (err) {
