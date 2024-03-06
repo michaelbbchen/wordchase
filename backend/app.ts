@@ -17,20 +17,26 @@ const io = new Server(httpServer, {
   },
 });
 
-const buildPath = path.join(__dirname, "../frontend/build");
+//const buildPath = path.join(__dirname, "../frontend/build");
 
-app.use(express.static(buildPath));
+//app.use(express.static(buildPath));
 
-app.get("/*", function (_, res) {
-  res.sendFile(
-    path.join(__dirname, "../client/build/index.html"),
-    function (err) {
-      if (err) {
-        res.status(500).send(err);
-      }
-    }
-  );
-});
+// app.get("/*", function (_, res) {
+//   console.log("got connection")
+//   res.sendFile(
+//     path.join(__dirname, "../client/build/index.html"),
+//     function (err) {
+//       if (err) {
+//         res.status(500).send(err);
+//       }
+//     }
+//   );
+// });
+
+
+app.get("/ping", (_, res) => {
+  res.send("pong")
+})
 
 const port = 3001;
 

@@ -1,9 +1,12 @@
-FROM oven/bun as base
-COPY . /app
+from oven/bun:1 as base
+
 WORKDIR /app
+
+COPY . .
 
 RUN bun install
 
 EXPOSE 3001
-# CMD node --loader ts-node/esm app.ts
-CMD bun run app.ts
+
+CMD ["bun", "start"]
+
